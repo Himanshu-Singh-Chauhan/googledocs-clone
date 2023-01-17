@@ -34,7 +34,6 @@ import DocumentRow from "../components/DocumentRow";
 
 export default function Home() {
   const { data: session } = useSession();
-  if (!session) return <Login />;
 
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState("");
@@ -88,6 +87,9 @@ export default function Home() {
       </DialogFooter>
     </Dialog>
   );
+
+
+  if (!session) return <Login />;
 
   return (
     // <div className={styles.container}>

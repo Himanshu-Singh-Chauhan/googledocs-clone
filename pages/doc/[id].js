@@ -10,10 +10,9 @@ import TextEditor from "../../components/TextEditor";
 
 function Doc() {
   const { data: session } = useSession();
-  if (!session) return <Login />;
 
   const router = useRouter();
-  const { id } = router.query;
+  const { id } = router?.query;
 
   const thisdoc = doc(
     collection(doc(collection(db, "userDocs"), session.user.email), "docs"),
@@ -25,6 +24,9 @@ function Doc() {
   if (!loadingSnapshot && !snapshot?.data().name) {
     router.replace("/");
   }
+
+
+  if (!session) return <Login />;
 
   return (
     <div>
