@@ -1,5 +1,6 @@
 import { Button, IconButton, Icon } from "@material-tailwind/react";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 function Header() {
 
@@ -36,9 +37,21 @@ function Header() {
         loading="lazy"
         className="cursor-pointer h-12 w-12 rounded-full ml-2"
         src={session?.user?.image}
-      ></img>
+        referrerpolicy="no-referrer"
+      />
     </header>
   );
 }
 
 export default Header;
+
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  return {
+    props: {
+      session,
+    },
+  };
+}
