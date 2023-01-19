@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import { IconButton } from "@material-tailwind/react";
 import { getSession, useSession } from "next-auth/react";
 import Login from "../components/Login";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useCollectionOnce } from "react-firebase-hooks/firestore";
 import { orderBy, query } from "firebase/firestore";
@@ -31,6 +31,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import DocumentRow from "../components/DocumentRow";
+import { Router, useRouter } from "next/router";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -38,23 +39,29 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState("");
 
+  const router = useRouter();
+
+
+  const useremail = session ? session?.user?.email : null
+
   const colRef = collection(db, "userDocs");
   // addDoc(colRef, {email: session.user.email})
 
-  const docRef = doc(colRef, session.user.email);
+  const docRef = doc(colRef, `${useremail}`);
   const docsRef = collection(docRef, "docs");
 
   const [ snapshot ] = useCollectionOnce(query(docsRef, orderBy("timestamp")));
   // console.log(snapshot.docs);
 
-  const createDocument = () => {
+  const createDocument = async () => {
     if (!input) return;
 
-    addDoc(docsRef, { name: input, timestamp: serverTimestamp() });
+    const newdoc = await addDoc(docsRef, { name: input, timestamp: serverTimestamp() });
 
-    // db.collection("userDocs").doc(session.user.email).collection('docs').add({fileName: input, timestamp: firebase.firestore.FieldValue.serverTimestamp()});
     setInput("");
     setShowModal(false);
+
+    router.push(`/doc/${newdoc.id}`);
   };
 
   const handleOpen = () => setShowModal(!showModal);
