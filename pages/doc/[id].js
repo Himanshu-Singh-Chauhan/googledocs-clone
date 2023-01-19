@@ -21,7 +21,7 @@ function Doc() {
 
   const [snapshot, loadingSnapshot] = useDocumentOnce(thisdoc);
 
-  if (!loadingSnapshot && !snapshot?.data().name) {
+  if (!loadingSnapshot && !snapshot?.data()?.name) {
     router.replace("/");
   }
 
